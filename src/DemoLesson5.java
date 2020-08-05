@@ -14,7 +14,7 @@ public class DemoLesson5 {
         Arrays.fill(arr, 1.0f);
         System.out.println("Start var.1...");
         long a = System.currentTimeMillis();
-        changeArray(arr, new Object());
+        changeArray(arr);
         System.out.println("time ms: " + (System.currentTimeMillis() - a));
 
     }
@@ -32,29 +32,41 @@ public class DemoLesson5 {
         long splitTime = System.currentTimeMillis() - startTime;
         long[] aTime = new long[2];
 
-        Object lock1 = new Object();
-        Object lock2 = new Object();
-
-        new Thread(new Runnable() {
+        Thread t1 = new Thread(new Runnable() {
             @Override
             public void run() {
                 aTime[0] = System.currentTimeMillis();
-                changeArray(a1, lock1);
+                changeArray(a1);
                 aTime[0] = System.currentTimeMillis() - aTime[0];
             }
-        }).start();
-        new Thread(new Runnable() {
+        });
+        t1.start();
+
+        Thread t2 = new Thread(new Runnable() {
             @Override
             public void run() {
                 aTime[1] = System.currentTimeMillis();
-                changeArray(a2, lock2);
+                changeArray(a2);
                 aTime[1] = System.currentTimeMillis() - aTime[1];
             }
-        }).start();
-        synchronized (lock1) {
+        });
+        t2.start();
+
+        if (t1.isAlive()) {
+            try {
+                t1.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
-        synchronized (lock2) {
+        if (t2.isAlive()) {
+            try {
+                t2.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+
         long joinTime = System.currentTimeMillis();
         System.arraycopy(a1, 0, arr, 0, h);
         System.arraycopy(a2, 0, arr, h, h);
@@ -65,15 +77,13 @@ public class DemoLesson5 {
         System.out.println("Time arr1: " + aTime[0]);
         System.out.println("Time arr2: " + aTime[1]);
         System.out.println("Time to join: " + joinTime);
-        System.out.println("Sum time: " + (splitTime+Math.max(aTime[0], aTime[1])+joinTime));
+        System.out.println("Sum time: " + (splitTime + Math.max(aTime[0], aTime[1]) + joinTime));
         System.out.println("Full time ms: " + fullTime);
     }
 
-    public static void changeArray(float[] arr, Object lock) {
-        synchronized (lock) {
-            for (int i = 0; i < arr.length; i++) {
-                arr[i] = (float) (arr[i] * Math.sin(0.2f + i / 5) * Math.cos(0.2f + i / 5) * Math.cos(0.4f + i / 2));
-            }
+    public static void changeArray(float[] arr) {
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = (float) (arr[i] * Math.sin(0.2f + i / 5) * Math.cos(0.2f + i / 5) * Math.cos(0.4f + i / 2));
         }
     }
 }
