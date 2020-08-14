@@ -1,4 +1,4 @@
-public class OneLinkedList {
+public class TwoLinkedList {
     private Node head;
     private Node tail;
     private int size;
@@ -12,6 +12,7 @@ public class OneLinkedList {
         }
 
         Node newNode = new Node(val);
+        newNode.setPrev(tail);
         tail.setNext(newNode);
         tail = newNode;
         size++;
@@ -53,36 +54,44 @@ public class OneLinkedList {
         return new Iterator(head);
     }
 
-    /**
-     * @deprecated breaks performance because has liner complexity
-     * Will go through all elements before find last one
-     */
-    private void add(String val, Node prev, Node current) {
-        if (current == null) {
-            prev.setNext(new Node(val));
-            return;
-        }
-        add(val, current, current.getNext());
-    }
-
     @Override
     public String toString() {
-        return "OneDirectionalList{" +
-                "head=" + head +
+        Node current = head;
+        StringBuilder stringBuilder = new StringBuilder();
+        while (current != null) {
+            stringBuilder.append(current);
+            current = current.next;
+            if (current != null) {
+                stringBuilder.append("; ");
+            }
+        }
+        return "TwoDirectionalList{" +
+                "head=" + stringBuilder.toString() +
                 '}';
     }
 
     private static class Node {
         private String value;
         private Node next;
+        private Node prev;
 
         public Node(String value) {
-            this(value, null);
+            this(value, null, null);
         }
 
-        public Node(String value, Node next) {
+        public Node(String value, Node next, Node prev) {
             this.value = value;
             this.next = next;
+            this.prev = prev;
+        }
+
+        @Override
+        public String toString() {
+            return "Node{" +
+                    "value='" + value + '\'' +
+                    ", next=" + ((next == null)? "null":next.getValue()) +
+                    ", prev=" + ((prev == null)? "null":prev.getValue()) +
+                    '}';
         }
 
         public String getValue() {
@@ -101,12 +110,12 @@ public class OneLinkedList {
             this.next = next;
         }
 
-        @Override
-        public String toString() {
-            return "Node{" +
-                    "value='" + value + '\'' +
-                    ", next=" + next +
-                    '}';
+        public Node getPrev() {
+            return prev;
+        }
+
+        public void setPrev(Node prev) {
+            this.prev = prev;
         }
     }
 

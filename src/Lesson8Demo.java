@@ -1,6 +1,6 @@
-public class Main {
+public class Lesson8Demo {
     public static void main(String[] args) {
-        OneLinkedList names = new OneLinkedList();
+        TwoLinkedList names = new TwoLinkedList();
         names.add("Mike");
         names.add("John");
         names.add("Jakub");
@@ -18,7 +18,7 @@ public class Main {
 
         System.out.println("Size: " + names.size());
 
-        OneLinkedList.Iterator iterator = names.iterator();
+        TwoLinkedList.Iterator iterator = names.iterator();
         while (iterator.hasNext()) {
             String value = iterator.next();
             System.out.println(value);
