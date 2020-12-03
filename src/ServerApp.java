@@ -1,5 +1,5 @@
-public class ClientDemo {
+public class ServerApp {
     public static void main(String[] args) {
-        new ChatClient();
+        new ChatServer();
     }
 }
